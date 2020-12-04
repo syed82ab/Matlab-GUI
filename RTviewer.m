@@ -333,7 +333,7 @@ ticker = upper(get(handles.edtTicker,'string'));
 dg1022z = visa( 'ni','TCPIP::10.1.0.22::INSTR' ); %Create VISA object
 fopen(dg1022z);  %Open the VISA object created  
 handles.dev = dg1022z;
-handles.t = createtimer(@fgRT,ticker,period,handles);
+handles.t = createtimer(@fgRT,ticker,period,handles,handles.dev);
 
 guidata(hObject,handles)
 
@@ -355,10 +355,11 @@ setappdata(gcf,'randomtime',Timevector)
 % Plot the New Data
 plotRT(ticker,Pricevector,Timevector)
 
-function fgRT(obj,event,ticker)
+function fgRT(obj,event,dg1022z,ticker)
 % Random Real-Time processing function
 
-% Create Random Pricefprintf(dg1022z, ':Counter:Measure?' );  %Send request  
+% Create Random Price
+fprintf(dg1022z, ':Counter:Measure?' );  %Send request  
    query_counter = fscanf(dg1022z);  %Query data   
    A=strsplit(query_counter,',');
 LastPrice.Last = str2double(A(1)); % first value is counter freq;
@@ -479,16 +480,16 @@ if ~isempty(alltimers) & isfield(handles,'t')
     end
     % use TIMERFIND function to find all timers, and delete them
     delete(alltimers)
-    rmfield(handles,'t');
+    handles=rmfield(handles,'t');
 elseif isfield(handles,'t')
-    rmfield(handles,'t');
+    handles=rmfield(handles,'t');
 end
 
 if isfield(handles,'Conn')
     close(handles.Conn)
 end
 if isfield(handles,'dev')
-    fclose(handles.dev)
+    fclose(handles.dev);
 end
 
 
