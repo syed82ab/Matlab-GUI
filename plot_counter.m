@@ -81,9 +81,9 @@ function plot_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 delete(instrfind)
-dg1022z = visa( 'ni','USB0::0x1AB1::0x0642::DG1ZA000000001::INSTR' ); %Create VISA object
+dg1022z = visa( 'ni','TCPIP::10.1.0.22::INSTR' ); %Create VISA object
 fopen(dg1022z);  %Open the VISA object created  
-fclose(dg1022z);  %Close the VISA object   
+   
  
 
 y=[0 0];
@@ -98,11 +98,12 @@ x=[0 0];
    y(1,2)=str2double(A(1)); % first value is counter freq
    h=plot(x,y);
    xlim([0 1000])
-   ylim([0 1000])
+   %ylim([0 1000])
    set(h,'XData',x,'YData',y,'Color','red');
    hold all;
 %    pause(0.01)
  end
+ fclose(dg1022z);  %Close the VISA object
 % --- Executes on button press in stop_button.
 function stop_button_Callback(hObject, eventdata, handles)
 % hObject    handle to stop_button (see GCBO)
