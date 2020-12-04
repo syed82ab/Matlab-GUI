@@ -355,6 +355,7 @@ function randomRT(obj,event,ticker)
 % Create Random Price
 LastPrice.Last = 100*rand;
 TickTime = datenum(event.Data.time);
+% tt=datetime(event.Data.time)
 
 % Update Price and Time vectors for plotting
 Pricevector = [getappdata(gcf,'randomprice'); LastPrice.Last];
@@ -373,7 +374,7 @@ fprintf(dg1022z, ':Counter:Measure?' );  %Send request
    query_counter = fscanf(dg1022z);  %Query data   
    A=strsplit(query_counter,',');
 LastPrice.Last = str2double(A(1)); % first value is counter freq;
-TickTime = datenum(event.Data.time);
+TickTime = datenum(event.Data.time)
 
 % Update Price and Time vectors for plotting
 Pricevector = [getappdata(gcf,'randomprice'); LastPrice.Last];
@@ -437,6 +438,15 @@ else
     end
     
     % Plot Connecting Line
+    max_points=200;
+    if length(Timevector) > max_points
+        Timevector(1:end-max_points)=[];
+        Pricevector(1:end-max_points)=[];
+        circs.XData(1:end-max_points)=[];
+        circs.YData(1:end-max_points)=[];
+        circs.CData(1:end-max_points,:)=[];
+        
+    end
     plot(Timevector,Pricevector)
     
     % 5 percent of the data range
@@ -450,14 +460,19 @@ else
     if Range == 0
         axispos = axis;
     else
-        axispos = [Timevector(1)-x5per,Timevector(end)+x5per, ...
+        axispos = [Timevector(1),Timevector(end), ...
         max(0,lowprice-Range*.05),highprice+Range*.05];
     end
-    
-    if length(Timevector) > 2
+%     length(Timevector)
+    if length(Timevector) >= max_points-1
+%         Timevector(1)
+        datetick('x','SS.FFF')        
+        xlim([Timevector(1) Timevector(end)]);
+    elseif length(Timevector) > 2
         % Create appropriate axis viewing range
         axis(axispos)
         datetick('x','SS.FFF')
+    
     end
 end
 
