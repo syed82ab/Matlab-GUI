@@ -22,7 +22,7 @@ function varargout = RTviewer(varargin)
 
 % Edit the above text to modify the response to help RTviewer
 
-% Last Modified by GUIDE v2.5 04-Dec-2020 16:35:47
+% Last Modified by GUIDE v2.5 04-Dec-2020 20:05:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,7 +54,7 @@ function RTviewer_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for RTviewer
 handles.output = hObject;
-
+handles.dev = '';
 % Get Ticker
 ticker = upper(get(handles.edtTicker,'string'));
 
@@ -65,11 +65,11 @@ setappdata(gcf,'todaydate',todaydate)
 
 % Create Empty Graph
 circs = scatter([],[],'filled');
-integration_ms=20;
+handles.integration='10.48ms';
 grid on
 title(['Real Time Counter of ',ticker,', ',datestr(todaydate)])
 xlabel('Time (s)')
-ylabel(['Counts in ',integration_ms,' ms'])
+ylabel(['Counts in ',handles.integration])
 
 % Define timer object based on Random Data as default
 handles.t = timer('TimerFcn',{@randomRT, ticker},'ExecutionMode', ...
@@ -306,7 +306,7 @@ function radRandom_Callback(hObject, eventdata, handles)
 handles = timerconncleanup(handles);
 
 % Clear Plot and Reset Values
-dataplotreset(handles.ticker)
+dataplotreset(handles.ticker,handles.integration)
 
 % Fetch Parameters
 period = get(handles.sldPeriod,'value');
@@ -314,6 +314,11 @@ ticker = upper(get(handles.edtTicker,'string'));
 
 handles.t = createtimer(@randomRT,ticker,period,handles);
 
+set(handles.radiobutton13,'enable','off')
+set(handles.radiobutton10,'enable','off')
+set(handles.radiobutton11,'enable','off')
+set(handles.radiobutton12,'enable','off')
+set(handles.radiobutton14,'enable','off')
 guidata(hObject,handles)
 
 % --- Executes on button press in radRandom.
@@ -325,8 +330,12 @@ function radFGCounter_Callback(hObject, eventdata, handles)
 handles = timerconncleanup(handles);
 
 % Clear Plot and Reset Values
-dataplotreset(handles.ticker)
-
+dataplotreset(handles.ticker,handles.integration)
+set(handles.radiobutton13,'enable','on')
+set(handles.radiobutton10,'enable','on')
+set(handles.radiobutton11,'enable','on')
+set(handles.radiobutton12,'enable','on')
+set(handles.radiobutton14,'enable','on')
 % Fetch Parameters
 period = get(handles.sldPeriod,'value');
 ticker = upper(get(handles.edtTicker,'string'));
@@ -334,7 +343,8 @@ dg1022z = visa( 'ni','TCPIP::10.1.0.22::INSTR' ); %Create VISA object
 fopen(dg1022z);  %Open the VISA object created  
 handles.dev = dg1022z;
 handles.t = createtimer(@fgRT,ticker,period,handles,handles.dev);
-
+fprintf(handles.dev, ':Counter:Gatettime USER2' ); 
+handles.integration='10.48ms';
 guidata(hObject,handles)
 
 
@@ -489,7 +499,9 @@ if isfield(handles,'Conn')
     close(handles.Conn)
 end
 if isfield(handles,'dev')
+    if handles.dev ~=''
     fclose(handles.dev);
+    end
 end
 
 
@@ -498,19 +510,19 @@ set(handles.tglRun,'value',0,'backgroundcolor','g','string','Run')
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function dataplotreset(ticker)
+function dataplotreset(ticker,integration)
 
 % Get Today's date
 todaydate = getappdata(gcf,'todaydate');
 
 reset(gca)
 % Create Empty Graph
-integration_ms='20';
+
 circs = scatter([],[],'filled');
 grid on
 title(['Real Time Couner of ',ticker,', ',datestr(todaydate)])
 xlabel('Time')
-ylabel(['Counts in ',integration_ms,' ms'])
+ylabel(['Counts in ', integration ])
 setappdata(gcf,'circs',circs)
 
 % Data Reset
@@ -535,3 +547,53 @@ else
     tim = timer('TimerFcn',{realtimefun, Conn, ticker},'ExecutionMode', ...
     'fixedRate', 'Period', period);
 end
+
+
+% --- Executes on button press in radiobutton13.
+function radiobutton13_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton13 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fprintf(handles.dev, ':Counter:Gatettime USER1' );  %Send request  
+handles.integration='1.310ms';
+% Hint: get(hObject,'Value') returns toggle state of radiobutton13
+
+
+% --- Executes on button press in radiobutton10.
+function radiobutton10_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fprintf(handles.dev, ':Counter:Gatettime USER2' ); 
+handles.integration='10.48ms';
+% Hint: get(hObject,'Value') returns toggle state of radiobutton10
+
+
+% --- Executes on button press in radiobutton11.
+function radiobutton11_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fprintf(handles.dev, ':Counter:Gatettime USER3' ); 
+handles.integration='166.7ms';
+% Hint: get(hObject,'Value') returns toggle state of radiobutton11
+
+
+% --- Executes on button press in radiobutton12.
+function radiobutton12_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fprintf(handles.dev, ':Counter:Gatettime USER4' ); 
+handles.integration='1.342s';
+% Hint: get(hObject,'Value') returns toggle state of radiobutton12
+
+
+% --- Executes on button press in radiobutton14.
+function radiobutton14_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fprintf(handles.dev, ':Counter:Gatettime USER5' ); 
+handles.integration='10.73s';
+% Hint: get(hObject,'Value') returns toggle state of radiobutton14
