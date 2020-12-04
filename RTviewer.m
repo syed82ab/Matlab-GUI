@@ -505,6 +505,7 @@ todaydate = getappdata(gcf,'todaydate');
 
 reset(gca)
 % Create Empty Graph
+integration_ms='20';
 circs = scatter([],[],'filled');
 grid on
 title(['Real Time Couner of ',ticker,', ',datestr(todaydate)])
