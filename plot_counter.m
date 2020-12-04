@@ -81,7 +81,7 @@ function plot_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 delete(instrfind)
-dg1022z = visa( 'ni','USB0::0x1AB1::0x0642::DG1ZA000000001::INSTR' ); %Create VISA object
+dg1022z = visa( 'ni','TCPIP::10.1.0.22::INSTR' ); %Create VISA object
 fopen(dg1022z);  %Open the VISA object created  
 fclose(dg1022z);  %Close the VISA object   
  
@@ -110,3 +110,40 @@ function stop_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
  delete(instrfind)
   
+function tglRun_Callback(hObject, eventdata, handles)
+% Start and stop collecting data
+
+% Get booling start of stopping value of toggle button
+stopgo = get(hObject,'Value');
+
+% Get period and ticker
+period = 0.02;
+% ticker = upper(get(handles.edtTicker,'string'));
+
+% Find all timers
+alltimers = timerfind;
+% Start and stop the timer, but only if it exists
+if ~isempty(alltimers) & isfield(handles,'t')
+    % Start Viewing Data
+    if stopgo
+        set(handles.t,'Period',period)
+        start(handles.t)
+        set(hObject,'string','Stop')
+        set(hObject,'BackGroundColor','r')
+%         set(handles.edtTicker,'enable','off')
+    else
+        stop(handles.t)
+        set(hObject,'BackGroundColor','g')
+        set(hObject,'string','Run')
+%         set(handles.edtTicker,'enable','on')
+    end
+
+else
+        % Timer doesn't exist, this will force the user to 
+    % create one using the other controls
+    set(hObject,'string','Run','BackGroundColor','g', ...
+        'value',0)
+end
+
+%update handles structure
+guidata(hObject,handles)
