@@ -374,7 +374,7 @@ fprintf(dg1022z, ':Counter:Measure?' );  %Send request
    query_counter = fscanf(dg1022z);  %Query data   
    A=strsplit(query_counter,',');
 LastPrice.Last = str2double(A(1)); % first value is counter freq;
-TickTime = datenum(event.Data.time)
+TickTime = datenum(event.Data.time);
 
 % Update Price and Time vectors for plotting
 Pricevector = [getappdata(gcf,'randomprice'); LastPrice.Last];
