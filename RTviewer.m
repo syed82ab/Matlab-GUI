@@ -343,7 +343,7 @@ dg1022z = visa( 'ni','TCPIP::10.1.0.22::INSTR' ); %Create VISA object
 fopen(dg1022z);  %Open the VISA object created  
 handles.dev = dg1022z;
 handles.t = createtimer(@fgRT,ticker,period,handles,handles.dev);
-fprintf(handles.dev, ':Counter:Gatettime USER2' ); 
+fprintf(dg1022z, ':Counter:Gatetime USER2' ); 
 handles.integration='10.48ms';
 guidata(hObject,handles)
 
@@ -554,7 +554,7 @@ function radiobutton13_Callback(hObject, eventdata, handles)
 % hObject    handle to radiobutton13 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-fprintf(handles.dev, ':Counter:Gatettime USER1' );  %Send request  
+fprintf(handles.dev, ':Counter:Gatetime USER1' );  %Send request  
 handles.integration='1.310ms';
 % Hint: get(hObject,'Value') returns toggle state of radiobutton13
 
@@ -564,7 +564,7 @@ function radiobutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to radiobutton10 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-fprintf(handles.dev, ':Counter:Gatettime USER2' ); 
+fprintf(handles.dev, ':Counter:Gatetime USER2' ); 
 handles.integration='10.48ms';
 % Hint: get(hObject,'Value') returns toggle state of radiobutton10
 
@@ -574,7 +574,7 @@ function radiobutton11_Callback(hObject, eventdata, handles)
 % hObject    handle to radiobutton11 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-fprintf(handles.dev, ':Counter:Gatettime USER3' ); 
+fprintf(handles.dev, ':Counter:Gatetime USER3' ); 
 handles.integration='166.7ms';
 % Hint: get(hObject,'Value') returns toggle state of radiobutton11
 
@@ -584,7 +584,7 @@ function radiobutton12_Callback(hObject, eventdata, handles)
 % hObject    handle to radiobutton12 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-fprintf(handles.dev, ':Counter:Gatettime USER4' ); 
+fprintf(handles.dev, ':Counter:Gatetime USER4' ); 
 handles.integration='1.342s';
 % Hint: get(hObject,'Value') returns toggle state of radiobutton12
 
@@ -594,6 +594,6 @@ function radiobutton14_Callback(hObject, eventdata, handles)
 % hObject    handle to radiobutton14 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-fprintf(handles.dev, ':Counter:Gatettime USER5' ); 
+fprintf(handles.dev, ':Counter:Gatetime USER5' ); 
 handles.integration='10.73s';
 % Hint: get(hObject,'Value') returns toggle state of radiobutton14
